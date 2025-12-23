@@ -22,7 +22,7 @@ if [[ -n "$OMD_THEME" ]]; then
 fi
 
 # Load plugins
-if [[ ${#OMD_PLUGINS[@]} -gt 0 ]]; then
+if [[ -z "${OMD_PLUGINS[*]}" || ${#OMD_PLUGINS[@]} -gt 0 ]]; then
   source "$OMD_DIR/lib/plugin-loader.sh"
   omd_load_plugins
 fi

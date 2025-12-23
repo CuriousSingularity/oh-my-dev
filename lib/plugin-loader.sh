@@ -17,7 +17,7 @@ readonly DEFAULT_PLUGINS=(
 # Load all enabled plugins
 omd_load_plugins() {
   local -a plugins_to_load=("${OMD_PLUGINS[@]:-${DEFAULT_PLUGINS[@]}}")
-  
+
   for plugin in "${plugins_to_load[@]}"; do
     omd_load_plugin "$plugin"
   done

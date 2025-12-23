@@ -347,45 +347,38 @@ devtools_install_fonts() {
   echo -e "${DEVTOOLS_BLUE}Installing Nerd Fonts (Meslo)...${DEVTOOLS_RESET}"
 
   local fonts_dir="$HOME/.local/share/fonts"
-  local font_installed=false
+  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.0-RC/Meslo.zip"
+  local temp_zip="/tmp/Meslo.zip"
 
-  # Check if fonts already exist
-  if [[ -d "$fonts_dir" ]] && ls "$fonts_dir"/MesloLGS* >/dev/null 2>&1; then
-    echo -e "${DEVTOOLS_YELLOW}Meslo Nerd Fonts already installed${DEVTOOLS_RESET}"
-    return 0
-  fi
-
+  # Remove and recreate fonts directory
+  rm -rf "$fonts_dir"
   mkdir -p "$fonts_dir"
-  cd "$fonts_dir" || return 1
 
   echo "Downloading Meslo Nerd Fonts..."
-  local base_url="https://github.com/romkatv/powerlevel10k-media/raw/master"
-  local fonts=(
-    "MesloLGS NF Regular.ttf"
-    "MesloLGS NF Bold.ttf"
-    "MesloLGS NF Italic.ttf"
-    "MesloLGS NF Bold Italic.ttf"
-  )
-
-  for font in "${fonts[@]}"; do
-    if curl -fLo "$font" "$base_url/$font"; then
-      font_installed=true
-    else
-      echo -e "${DEVTOOLS_RED}✗ Failed to download $font${DEVTOOLS_RESET}" >&2
-    fi
-  done
-
-  if [[ "$font_installed" == "true" ]]; then
-    fc-cache -f -v >/dev/null 2>&1
-    echo -e "${DEVTOOLS_GREEN}✓ Meslo Nerd Fonts installed${DEVTOOLS_RESET}"
-    echo ""
-    echo -e "${DEVTOOLS_YELLOW}Note: Set your terminal font to 'MesloLGS NF'${DEVTOOLS_RESET}"
-  else
-    echo -e "${DEVTOOLS_RED}✗ Failed to install fonts${DEVTOOLS_RESET}" >&2
+  if ! wget -q "$font_url" -O "$temp_zip"; then
+    echo -e "${DEVTOOLS_RED}✗ Failed to download Meslo fonts${DEVTOOLS_RESET}" >&2
     return 1
   fi
 
-  cd - >/dev/null || return 0
+  echo "Extracting fonts..."
+  if ! unzip -q "$temp_zip" -d "$fonts_dir"; then
+    echo -e "${DEVTOOLS_RED}✗ Failed to extract fonts${DEVTOOLS_RESET}" >&2
+    rm -f "$temp_zip"
+    return 1
+  fi
+
+  rm "$temp_zip"
+
+  # Remove Windows font files
+  find "$fonts_dir" -name "*Windows*" -delete
+
+  # Rebuild font cache
+  echo "Rebuilding font cache..."
+  fc-cache -fv >/dev/null 2>&1
+
+  echo -e "${DEVTOOLS_GREEN}✓ Meslo Nerd Fonts installed${DEVTOOLS_RESET}"
+  echo ""
+  echo -e "${DEVTOOLS_YELLOW}Note: Set your terminal font to 'MesloLGS NF'${DEVTOOLS_RESET}"
 }
 
 # Install Oh My Zsh with powerlevel10k theme and plugins

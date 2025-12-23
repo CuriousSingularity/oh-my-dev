@@ -355,21 +355,23 @@ devtools_install_fonts() {
     fonts_dir="$HOME/Library/Fonts"
   else
     fonts_dir="$HOME/.local/share/fonts"
+    # Remove and recreate fonts directory for Linux
+    rm -rf "$fonts_dir"
   fi
 
-  # Remove and recreate fonts directory for Linux
-  rm -rf "$fonts_dir"
   mkdir -p "$fonts_dir"
 
   echo "Downloading Meslo Nerd Fonts..."
-  local download_cmd
   if command -v wget >/dev/null 2>&1; then
-    download_cmd="wget -q"
+    wget -q "$font_url" -O "$temp_zip"
+  elif command -v curl >/dev/null 2>&1; then
+    curl -fL "$font_url" -o "$temp_zip"
   else
-    download_cmd="curl -fL"
+    echo -e "${DEVTOOLS_RED}✗ Neither curl nor wget available${DEVTOOLS_RESET}" >&2
+    return 1
   fi
 
-  if ! $download_cmd "$font_url" -o "$temp_zip"; then
+  if [[ ! -f "$temp_zip" ]]; then
     echo -e "${DEVTOOLS_RED}✗ Failed to download Meslo fonts${DEVTOOLS_RESET}" >&2
     return 1
   fi

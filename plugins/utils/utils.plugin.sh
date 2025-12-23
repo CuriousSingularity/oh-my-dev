@@ -420,3 +420,54 @@ unpack() {
             ;;
     esac
 }
+
+# Function to recursively find and delete a directory by name
+# Usage: rmdirname [dirname]
+#   dirname: The directory name to find and delete (default: .venv)
+rmdirname() {
+    local dirname=${1:-.venv}
+
+    if [ -z "$dirname" ]; then
+        echo "Error: Directory name is required." >&2
+        return 1
+    fi
+
+    local count=0
+    while IFS= read -r -d '' dir; do
+        ((count++))
+        echo "Deleting: $dir"
+        if ! rm -rf "$dir"; then
+            echo "Warning: Failed to delete '$dir'" >&2
+        fi
+    done < <(find . -type d -name "$dirname" -print0 2>/dev/null)
+
+    if [ $count -eq 0 ]; then
+        echo "No directories named '$dirname' found."
+    else
+        echo "Deleted $count directory/directories named '$dirname'."
+    fi
+}
+
+# Function to recursively find and list a directory by name
+# Usage: listdirname [dirname]
+#   dirname: The directory name to find and list (default: .venv)
+listdirname() {
+    local dirname=${1:-.venv}
+
+    if [ -z "$dirname" ]; then
+        echo "Error: Directory name is required." >&2
+        return 1
+    fi
+
+    local count=0
+    while IFS= read -r -d '' dir; do
+        ((count++))
+        echo "Found: $dir"
+    done < <(find . -type d -name "$dirname" -print0 2>/dev/null)
+
+    if [ $count -eq 0 ]; then
+        echo "No directories named '$dirname' found."
+    else
+        echo "Found $count directory/directories named '$dirname'."
+    fi
+}

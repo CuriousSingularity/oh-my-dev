@@ -347,7 +347,7 @@ devtools_install_fonts() {
   echo -e "${DEVTOOLS_BLUE}Installing Nerd Fonts (Meslo)...${DEVTOOLS_RESET}"
 
   local fonts_dir
-  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Meslo.zip"
+  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/Meslo.zip"
   local temp_zip="/tmp/Meslo.zip"
 
   # Determine fonts directory based on OS

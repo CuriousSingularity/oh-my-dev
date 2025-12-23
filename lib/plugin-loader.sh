@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 # Plugin loader for Oh My Dev
 
+# Default plugins list
+readonly DEFAULT_PLUGINS=(
+  "claude-code"
+  "devtools"
+  "docker"
+  "gemini"
+  "git"
+  "shortcuts"
+  "utils"
+  "uv"
+  "weather"
+)
+
 # Load all enabled plugins
 omd_load_plugins() {
-  local plugin
-
-  for plugin in "${OMD_PLUGINS[@]}"; do
+  local -a plugins_to_load=("${OMD_PLUGINS[@]:-${DEFAULT_PLUGINS[@]}}")
+  
+  for plugin in "${plugins_to_load[@]}"; do
     omd_load_plugin "$plugin"
   done
 }
@@ -14,30 +27,28 @@ omd_load_plugins() {
 omd_load_plugin() {
   local plugin="$1"
   local plugin_path
-
-  # Check in custom plugins directory first
-  if [[ -f "$OMD_DIR/custom/plugins/$plugin/$plugin.plugin.sh" ]]; then
-    plugin_path="$OMD_DIR/custom/plugins/$plugin/$plugin.plugin.sh"
-  # Then check in default plugins directory
-  elif [[ -f "$OMD_DIR/plugins/$plugin/$plugin.plugin.sh" ]]; then
-    plugin_path="$OMD_DIR/plugins/$plugin/$plugin.plugin.sh"
+  
+  # Try custom plugins first, then default plugins
+  plugin_path="$OMD_DIR/custom/plugins/$plugin/$plugin.plugin.sh"
+  [[ ! -f "$plugin_path" ]] && plugin_path="$OMD_DIR/plugins/$plugin/$plugin.plugin.sh"
+  
+  if [[ -f "$plugin_path" ]]; then
+    # shellcheck disable=SC1090
+    source "$plugin_path"
   else
     omd_warning "Plugin '$plugin' not found"
     return 1
   fi
-
-  # shellcheck disable=SC1090
-  source "$plugin_path"
 }
 
 # List available plugins
 omd_list_plugins() {
   echo "Available plugins:"
   echo ""
-
+  
   # List default plugins
   if [[ -d "$OMD_DIR/plugins" ]]; then
-    echo "Default plugins:"
+  echo "Default plugins:"
     for plugin_dir in "$OMD_DIR/plugins"/*; do
       if [[ -d "$plugin_dir" ]]; then
         echo "  - $(basename "$plugin_dir")"

@@ -363,10 +363,10 @@ devtools_install_fonts() {
 
   echo "Downloading Meslo Nerd Fonts..."
   local download_cmd
-  if command -v curl >/dev/null 2>&1; then
-    download_cmd="curl -fL"
-  else
+  if command -v wget >/dev/null 2>&1; then
     download_cmd="wget -q"
+  else
+    download_cmd="curl -fL"
   fi
 
   if ! $download_cmd "$font_url" -o "$temp_zip"; then

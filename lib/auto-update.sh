@@ -24,7 +24,6 @@ omd_should_check_updates() {
 omd_update_check_timestamp() {
   omd_timestamp > "$OMD_UPDATE_FILE"
 }
-
 # Check for updates from git
 omd_check_for_updates() {
   # Only check if we should (based on interval)
@@ -36,6 +35,9 @@ omd_check_for_updates() {
   if ! omd_command_exists git; then
     return 1
   fi
+
+  local current_dir
+  current_dir=$(pwd)
 
   # Change to Oh My Dev directory
   cd "$OMD_DIR" || return 1
@@ -60,11 +62,17 @@ omd_check_for_updates() {
 
   # Update timestamp
   omd_update_check_timestamp
+
+  # Return to the original directory
+  cd "$current_dir" || return 1
 }
 
 # Perform the actual update
 omd_perform_update() {
   omd_info "Updates available! Updating Oh My Dev..."
+
+  local current_dir
+  current_dir=$(pwd)
 
   cd "$OMD_DIR" || return 1
 
@@ -77,11 +85,16 @@ omd_perform_update() {
   else
     omd_error "Update failed. Please run 'cd $OMD_DIR && git pull' manually."
   fi
+
+  cd "$current_dir" || return 1
 }
 
 # Manual update command
 omd_update() {
   omd_info "Checking for updates..."
+
+  local current_dir
+  current_dir=$(pwd)
 
   cd "$OMD_DIR" || return 1
 
@@ -107,4 +120,7 @@ omd_update() {
   else
     omd_perform_update
   fi
+
+  # Return to the original directory
+  cd "$current_dir" || return 1
 }

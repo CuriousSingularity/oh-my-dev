@@ -25,10 +25,6 @@ alias glog="git log --oneline --decorate --graph"
 alias gloga="git log --oneline --decorate --graph --all"
 
 # Git functions
-gclean() {
-  git branch --merged | grep -v "\*" | grep -v "main\|master\|develop" | xargs -n 1 git branch -d
-}
-
 gbranch() {
   git branch -a | grep -v "remotes" | sed 's/^..//'
 }

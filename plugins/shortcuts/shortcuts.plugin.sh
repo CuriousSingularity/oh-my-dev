@@ -66,6 +66,7 @@ alias grp="grep --color=auto -Rni"
 # ============================================================================
 
 # Force remove files/directories (use with caution!)
+alias rm="rm -r"
 alias rmf="rm -rf"
 
 # ============================================================================

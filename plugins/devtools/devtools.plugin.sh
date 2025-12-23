@@ -346,16 +346,30 @@ devtools_install_uv() {
 devtools_install_fonts() {
   echo -e "${DEVTOOLS_BLUE}Installing Nerd Fonts (Meslo)...${DEVTOOLS_RESET}"
 
-  local fonts_dir="$HOME/.local/share/fonts"
-  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.0-RC/Meslo.zip"
+  local fonts_dir
+  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.0/Meslo.zip"
   local temp_zip="/tmp/Meslo.zip"
 
-  # Remove and recreate fonts directory
+  # Determine fonts directory based on OS
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    fonts_dir="$HOME/Library/Fonts"
+  else
+    fonts_dir="$HOME/.local/share/fonts"
+  fi
+
+  # Remove and recreate fonts directory for Linux
   rm -rf "$fonts_dir"
   mkdir -p "$fonts_dir"
 
   echo "Downloading Meslo Nerd Fonts..."
-  if ! wget -q "$font_url" -O "$temp_zip"; then
+  local download_cmd
+  if command -v curl >/dev/null 2>&1; then
+    download_cmd="curl -fL"
+  else
+    download_cmd="wget -q"
+  fi
+
+  if ! $download_cmd "$font_url" -o "$temp_zip"; then
     echo -e "${DEVTOOLS_RED}✗ Failed to download Meslo fonts${DEVTOOLS_RESET}" >&2
     return 1
   fi
@@ -372,9 +386,11 @@ devtools_install_fonts() {
   # Remove Windows font files
   find "$fonts_dir" -name "*Windows*" -delete
 
-  # Rebuild font cache
-  echo "Rebuilding font cache..."
-  fc-cache -fv >/dev/null 2>&1
+  # Rebuild font cache on Linux
+  if [[ "$OSTYPE" != "darwin"* ]]; then
+    echo "Rebuilding font cache..."
+    fc-cache -fv >/dev/null 2>&1
+  fi
 
   echo -e "${DEVTOOLS_GREEN}✓ Meslo Nerd Fonts installed${DEVTOOLS_RESET}"
   echo ""

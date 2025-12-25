@@ -194,7 +194,6 @@ jobs:
           "oh-my-dev.sh"
           "README.md"
           "LICENSE"
-          "CLAUDE.md"
           "lib/utils.sh"
           "lib/auto-update.sh"
           "lib/plugin-loader.sh"

@@ -65,6 +65,9 @@ alias grp="grep --color=auto -Rni"
 # File Operations
 # ============================================================================
 
+# Recursive copy
+alias cp="cp -r"
+
 # Force remove files/directories (use with caution!)
 alias rm="rm -r"
 alias rmf="rm -rf"

@@ -471,3 +471,23 @@ listdirname() {
         echo "Found $count directory/directories named '$dirname'."
     fi
 }
+
+# Function to display battery information
+# Usage: chargeinfo
+chargeinfo() {
+    # if on macOS
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        system_profiler SPPowerDataType
+    # if on Linux
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if command -v upower >/dev/null 2>&1; then
+            upower -i $(upower -e | grep 'BAT')
+        else
+            echo "Error: upower command not found." >&2
+            return 1
+        fi
+    else
+        echo "Error: Unsupported OS type '$OSTYPE'." >&2
+        return 1
+    fi
+}

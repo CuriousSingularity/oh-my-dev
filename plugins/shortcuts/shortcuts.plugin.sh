@@ -170,8 +170,3 @@ alias hg="history | grep"
 
 # Clear history
 alias hc="history -c"
-
-# ============================================================================
-# MAC Specific Shortcuts
-# ============================================================================
-alias chargeinfo="system_profiler SPPowerDataType"

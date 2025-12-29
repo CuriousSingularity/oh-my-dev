@@ -79,11 +79,17 @@ jobs:
         export OMD_REPO="https://github.com/curioussingularity/oh-my-dev.git"
         export TERM=dumb
 
+        # Ensure .bashrc exists in CI environment
+        touch "$HOME/.bashrc"
+
         # Ensure clean installation directory
         rm -rf "$OMD_DIR"
 
-        # Download and run installer
-        curl -fsSL https://raw.githubusercontent.com/curioussingularity/oh-my-dev/main/tools/install.sh | bash || {
+        # Download installer
+        curl -fsSL https://raw.githubusercontent.com/curioussingularity/oh-my-dev/main/tools/install.sh -o /tmp/install.sh
+
+        # Run installer
+        bash /tmp/install.sh || {
           echo "Installation failed with exit code $?"
           exit 1
         }

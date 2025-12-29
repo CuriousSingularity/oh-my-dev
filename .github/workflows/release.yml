@@ -74,6 +74,7 @@ jobs:
     steps:
     - name: Test installation from release
       run: |
+        set -x  # Enable debug mode
         export OMD_DIR="$HOME/.oh-my-dev-release-test"
         export OMD_REPO="https://github.com/curioussingularity/oh-my-dev.git"
         export TERM=dumb
@@ -82,10 +83,16 @@ jobs:
         rm -rf "$OMD_DIR"
 
         # Download and run installer
-        curl -fsSL https://raw.githubusercontent.com/curioussingularity/oh-my-dev/main/tools/install.sh | bash
+        curl -fsSL https://raw.githubusercontent.com/curioussingularity/oh-my-dev/main/tools/install.sh | bash || {
+          echo "Installation failed with exit code $?"
+          exit 1
+        }
 
         # Verify installation
-        [ -d "$OMD_DIR" ] || exit 1
-        [ -f "$OMD_DIR/oh-my-dev.sh" ] || exit 1
+        echo "Checking if $OMD_DIR exists..."
+        [ -d "$OMD_DIR" ] || { echo "Error: $OMD_DIR directory not found"; exit 1; }
+
+        echo "Checking if $OMD_DIR/oh-my-dev.sh exists..."
+        [ -f "$OMD_DIR/oh-my-dev.sh" ] || { echo "Error: $OMD_DIR/oh-my-dev.sh not found"; exit 1; }
 
         echo "✓ Release installation verified"

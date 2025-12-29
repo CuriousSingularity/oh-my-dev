@@ -76,6 +76,10 @@ jobs:
       run: |
         export OMD_DIR="$HOME/.oh-my-dev-release-test"
         export OMD_REPO="https://github.com/curioussingularity/oh-my-dev.git"
+        export TERM=dumb
+
+        # Ensure clean installation directory
+        rm -rf "$OMD_DIR"
 
         # Download and run installer
         curl -fsSL https://raw.githubusercontent.com/curioussingularity/oh-my-dev/main/tools/install.sh | bash

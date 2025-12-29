@@ -481,7 +481,7 @@ chargeinfo() {
     # if on Linux
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
         if command -v upower >/dev/null 2>&1; then
-            upower -i $(upower -e | grep 'BAT')
+            upower -i "$(upower -e | grep 'BAT')"
         else
             echo "Error: upower command not found." >&2
             return 1

@@ -491,3 +491,29 @@ chargeinfo() {
         return 1
     fi
 }
+
+# Function to create and set a global git ignore file
+# Usage: gitignore_global [filename]
+#   filename: The path/name for the global gitignore file (default: ~/.gitignore)
+config-gitignore-global() {
+    local gitignore_file=${1:-~/.gitignore}
+
+    # Expand tilde to full path if needed
+    gitignore_file="${gitignore_file/#\~/$HOME}"
+
+    # Create the gitignore file if it doesn't exist
+    if [ ! -f "$gitignore_file" ]; then
+        touch "$gitignore_file"
+        echo "Created gitignore file: $gitignore_file"
+    else
+        echo "Gitignore file already exists: $gitignore_file"
+    fi
+
+    # Set it as the global excludes file
+    if git config --global core.excludesfile "$gitignore_file"; then
+        echo "Successfully set global git ignore file to: $gitignore_file"
+    else
+        echo "Error: Failed to set global git ignore file." >&2
+        return 1
+    fi
+}

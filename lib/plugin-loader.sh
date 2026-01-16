@@ -8,6 +8,7 @@ readonly DEFAULT_PLUGINS=(
   "docker"
   "gemini"
   "git"
+  "scripts"
   "shortcuts"
   "utils"
   "uv"

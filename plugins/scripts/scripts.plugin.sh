@@ -2,9 +2,12 @@
 # Script plugin for Oh My Dev
 # Provides useful script aliases and functions
 
+# Store the script path when the file is sourced
+SCRIPT_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
+
 # Function to run ec2.py script by resolving its path
 ec2() {
-    local script_path="$(realpath "$(dirname "${BASH_SOURCE[0]}")/python/ec2.py")"
+    local script_path="$(realpath "$SCRIPT_DIR/python/ec2.py")"
     
     if [[ -f "$script_path" ]]; then
         python3 "$script_path" "$@"

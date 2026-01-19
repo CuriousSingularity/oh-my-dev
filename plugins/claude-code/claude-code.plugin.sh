@@ -174,7 +174,7 @@ _claude_status() {
 
 # Update the claude code configuration globally such as agents, commands, skills etc
 _claude_update_config() {
-  cp -r $OMD_DIR/configs/claude "$HOME/.claude/"
+  cp -rv $OMD_DIR/configs/claude "$HOME/.claude/"
 }
 
 # Useful aliases

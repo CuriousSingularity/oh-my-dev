@@ -35,7 +35,7 @@
 #    export OMD_PLUGINS=(git docker uv utils claude-code)
 
 # Check if Claude Code is installed
-claude_code_installed() {
+_claude_code_installed() {
   command -v claude >/dev/null 2>&1
 }
 
@@ -48,7 +48,7 @@ claude_code_configured() {
 }
 
 # Setup Vertex AI environment variables
-# Usage: claude_setup_vertex <credentials-path> <project-id> [region]
+# Usage: _claude_setup_vertex <credentials-path> <project-id> [region]
 #
 # Arguments:
 #   credentials-path: Path to your Google Cloud service account JSON key file
@@ -56,9 +56,9 @@ claude_code_configured() {
 #   region:           Google Cloud region (default: europe-west1)
 #
 # Example:
-#   claude_setup_vertex ~/service-account.json my-project-id
-#   claude_setup_vertex ~/service-account.json my-project-id us-central1
-claude_setup_vertex() {
+#   _claude_setup_vertex ~/service-account.json my-project-id
+#   _claude_setup_vertex ~/service-account.json my-project-id us-central1
+_claude_setup_vertex() {
   local creds_path=$1
   local project_id=$2
   local region=${3:-europe-west1}
@@ -101,11 +101,11 @@ claude_setup_vertex() {
 }
 
 # Install Claude CLI
-# Usage: claude_install
+# Usage: _claude_install
 #
 # Example:
-#   claude_install
-claude_install() {
+#   _claude_install
+_claude_install() {
   echo "Installing Claude Code CLI..."
   if curl -fsSL https://claude.ai/install.sh | bash; then
     echo "✓ Claude Code CLI installed successfully"
@@ -119,18 +119,18 @@ claude_install() {
 }
 
 # Show Claude Code status
-# Usage: claude_status
+# Usage: _claude_status
 #
 # Example:
-#   claude_status
-claude_status() {
+#   _claude_status
+_claude_status() {
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "  Claude Code Status"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
 
   # Check CLI installation
-  if claude_code_installed; then
+  if _claude_code_installed; then
     echo "✓ Claude CLI installed"
     local version
     version=$(claude --version 2>/dev/null || echo "unknown")
@@ -172,7 +172,20 @@ claude_status() {
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
 
+# Update the claude code configuration globally such as agents, commands, skills etc
+_claude_update_config() {
+  cp -r $OMD_DIR/configs/claude "$HOME/.claude/"
+}
+
 # Useful aliases
-alias claude-status='claude_status'
-alias claude-config='claude_setup_vertex'
-alias claude-install='claude_install'
+alias omd-claude-status='_claude_status'
+alias omd-claude-config='_claude_setup_vertex'
+alias omd-claude-install='_claude_install'
+alias omd-claude-update-config='_claude_update_config'
+
+# unset internal function names to avoid polluting global namespace
+unset -f _claude_code_installed
+unset -f _claude_setup_vertex
+unset -f _claude_install
+unset -f _claude_status
+unset -f _claude_update_config

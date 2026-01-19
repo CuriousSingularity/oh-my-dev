@@ -182,10 +182,3 @@ alias omd-claude-status='_claude_status'
 alias omd-claude-config='_claude_setup_vertex'
 alias omd-claude-install='_claude_install'
 alias omd-claude-update-config='_claude_update_config'
-
-# unset internal function names to avoid polluting global namespace
-unset -f _claude_code_installed
-unset -f _claude_setup_vertex
-unset -f _claude_install
-unset -f _claude_status
-unset -f _claude_update_config

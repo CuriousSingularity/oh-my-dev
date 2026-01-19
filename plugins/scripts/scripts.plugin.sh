@@ -3,12 +3,11 @@
 # Provides useful script aliases and functions
 
 # Store the script path when the file is sourced
-# Use namespaced variable to avoid conflicts
-readonly OMD_SCRIPTS_PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Function to run ec2.py script by resolving its path
 ec2() {
-    local script_path="$OMD_SCRIPTS_PLUGIN_DIR/python/ec2.py"
+    local SCRIPT_BASE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+    local script_path="$SCRIPT_BASE_PATH/python/ec2.py"
 
     if [[ -f "$script_path" ]]; then
         python3 "$script_path" "$@"

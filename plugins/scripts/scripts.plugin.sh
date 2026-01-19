@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Script plugin for Oh My Dev
 # Provides useful script aliases and functions
+readonly OMD_SCRIPTS_PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Store the script path when the file is sourced
 
 # Function to run ec2.py script by resolving its path
 ec2() {
-    local SCRIPT_BASE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    local script_path="$SCRIPT_BASE_PATH/python/ec2.py"
+    local script_path="$OMD_SCRIPTS_PLUGIN_DIR/python/ec2.py"
 
     if [[ -f "$script_path" ]]; then
         python3 "$script_path" "$@"

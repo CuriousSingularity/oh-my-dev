@@ -6,7 +6,7 @@
 
 # Function to run ec2.py script by resolving its path
 ec2() {
-    local SCRIPT_BASE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+    local SCRIPT_BASE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     local script_path="$SCRIPT_BASE_PATH/python/ec2.py"
 
     if [[ -f "$script_path" ]]; then

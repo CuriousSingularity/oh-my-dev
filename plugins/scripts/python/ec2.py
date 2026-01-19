@@ -2,6 +2,25 @@
 from argparse import ArgumentParser
 import boto3
 import botocore
+from pathlib import Path
+
+
+def get_ec2_config():
+    ec2_yaml_path = Path.home() / ".ec2.yaml"
+    if ec2_yaml_path.exists():
+        import yaml
+
+        with open(ec2_yaml_path, "r") as f:
+            ec2_config = yaml.safe_load(f)
+        instances = ec2_config.get("instances", [])
+        instances = [tuple(instance) for instance in instances]
+    else:
+        instances = [
+            ("i-0000000000000000A", "ec2-server-01"),
+            ("i-0000000000000000B", "ec2-server-02"),
+        ]
+
+    return instances
 
 
 def main(args):
@@ -17,10 +36,7 @@ def main(args):
         verify=not args.no_ssl,
     )
 
-    instances = [
-        ("i-0000000000000000A", "ec2-server-01"),
-        ("i-0000000000000000B", "ec2-server-02"),
-    ]
+    instances = get_ec2_config()
 
     for attempt in range(args.max_attempts):
         try:
@@ -50,7 +66,7 @@ def main(args):
             )
         except Exception as e:
             pass
-    
+
     print("-" * 75)
 
     if args.start is not None and 1 <= args.start <= len(instances):

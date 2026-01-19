@@ -2,7 +2,7 @@
 # Plugin loader for Oh My Dev
 
 # Default plugins list
-readonly DEFAULT_PLUGINS=(
+readonly OMD_DEFAULT_PLUGINS=(
   "claude-code"
   "devtools"
   "docker"
@@ -15,9 +15,12 @@ readonly DEFAULT_PLUGINS=(
   "weather"
 )
 
+readonly OMD_SCRIPTS_PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)/../plugins/scripts"
+
+
 # Load all enabled plugins
 omd_load_plugins() {
-  local -a plugins_to_load=("${OMD_PLUGINS[@]:-${DEFAULT_PLUGINS[@]}}")
+  local -a plugins_to_load=("${OMD_PLUGINS[@]:-${OMD_DEFAULT_PLUGINS[@]}}")
 
   for plugin in "${plugins_to_load[@]}"; do
     omd_load_plugin "$plugin"

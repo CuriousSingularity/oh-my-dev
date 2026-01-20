@@ -386,41 +386,63 @@ unpack() {
         return 1
     fi
 
-    echo "Extracting archive: $archive_file"
+    # Get the filename without extension for extraction directory
+    local basename=$(basename "$archive_file")
+    local extract_dir="${basename%.*}"
+    
+    # Handle double extensions like .tar.gz
+    case "$basename" in
+        *.tar.gz|*.tar.bz2)
+            extract_dir="${basename%.tar.*}"
+            ;;
+    esac
+
+    # Create extraction directory
+    mkdir -p "$extract_dir"
+    echo "Extracting archive: $archive_file to directory: $extract_dir"
+
     # Determine extraction method based on file extension
     case "$archive_file" in
         *.tar.bz2|*.tbz2)
-            tar xjf "$archive_file"
+            tar xjf "$archive_file" -C "$extract_dir"
             ;;
         *.tar.gz|*.tgz)
-            tar xzf "$archive_file"
+            tar xzf "$archive_file" -C "$extract_dir"
             ;;
         *.bz2)
-            bunzip2 "$archive_file"
+            bunzip2 -c "$archive_file" > "$extract_dir/${basename%.bz2}"
             ;;
         *.rar)
-            unrar x "$archive_file"
+            unrar x "$archive_file" "$extract_dir/"
             ;;
         *.gz)
-            gunzip "$archive_file"
+            gunzip -c "$archive_file" > "$extract_dir/${basename%.gz}"
             ;;
         *.tar)
-            tar xf "$archive_file"
+            tar xf "$archive_file" -C "$extract_dir"
             ;;
         *.zip)
-            unzip "$archive_file"
+            unzip "$archive_file" -d "$extract_dir"
             ;;
         *.Z)
-            uncompress "$archive_file"
+            uncompress -c "$archive_file" > "$extract_dir/${basename%.Z}"
             ;;
         *.7z)
-            7z x "$archive_file"
+            7z x "$archive_file" -o"$extract_dir"
             ;;
         *)
             echo "Error: Unsupported archive format. Supported formats: .tar, .tar.gz, .tgz, .tar.bz2, .tbz2, .bz2, .rar, .gz, .zip, .Z, .7z" >&2
+            rmdir "$extract_dir" 2>/dev/null
             return 1
             ;;
     esac
+
+    if [ $? -eq 0 ]; then
+        echo "Archive extracted successfully to: $extract_dir"
+    else
+        echo "Error: Failed to extract archive." >&2
+        return 1
+    fi
 }
 
 # Function to recursively find and delete a directory by name

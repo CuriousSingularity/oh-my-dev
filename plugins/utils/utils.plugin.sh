@@ -373,49 +373,51 @@ packz() {
 # Function to unpack a tar archive
 # Usage: unpack <tar_file>
 unpack() {
-    local tar_file=$1
+    local archive_file=$1
 
-    if [ -z "$tar_file" ]; then
-        echo "Error: Tar file is required." >&2
-        echo "Usage: unpack <tar_file>" >&2
+    if [ -z "$archive_file" ]; then
+        echo "Error: Archive file is required." >&2
+        echo "Usage: unpack <archive_file>" >&2
         return 1
     fi
 
-    if [ ! -f "$tar_file" ]; then
-        echo "Error: File '$tar_file' does not exist." >&2
+    if [ ! -f "$archive_file" ]; then
+        echo "Error: File '$archive_file' does not exist." >&2
         return 1
     fi
 
-    echo "Extracting archive: $tar_file"
-
+    echo "Extracting archive: $archive_file"
     # Determine extraction method based on file extension
-    case "$tar_file" in
-        *.tar.gz|*.tgz)
-            if tar -xzf "$tar_file"; then
-                echo "Compressed tar archive '$tar_file' extracted successfully."
-            else
-                echo "Error: Failed to extract compressed tar archive '$tar_file'." >&2
-                return 1
-            fi
-            ;;
+    case "$archive_file" in
         *.tar.bz2|*.tbz2)
-            if tar -xjf "$tar_file"; then
-                echo "Bzip2 compressed tar archive '$tar_file' extracted successfully."
-            else
-                echo "Error: Failed to extract bzip2 compressed tar archive '$tar_file'." >&2
-                return 1
-            fi
+            tar xjf "$archive_file"
+            ;;
+        *.tar.gz|*.tgz)
+            tar xzf "$archive_file"
+            ;;
+        *.bz2)
+            bunzip2 "$archive_file"
+            ;;
+        *.rar)
+            unrar x "$archive_file"
+            ;;
+        *.gz)
+            gunzip "$archive_file"
             ;;
         *.tar)
-            if tar -xf "$tar_file"; then
-                echo "Tar archive '$tar_file' extracted successfully."
-            else
-                echo "Error: Failed to extract tar archive '$tar_file'." >&2
-                return 1
-            fi
+            tar xf "$archive_file"
+            ;;
+        *.zip)
+            unzip "$archive_file"
+            ;;
+        *.Z)
+            uncompress "$archive_file"
+            ;;
+        *.7z)
+            7z x "$archive_file"
             ;;
         *)
-            echo "Error: Unsupported archive format. Supported formats: .tar, .tar.gz, .tgz, .tar.bz2, .tbz2" >&2
+            echo "Error: Unsupported archive format. Supported formats: .tar, .tar.gz, .tgz, .tar.bz2, .tbz2, .bz2, .rar, .gz, .zip, .Z, .7z" >&2
             return 1
             ;;
     esac

@@ -178,6 +178,11 @@ _claude_update_config() {
 }
 
 # Useful aliases
+alias ai-cc="claude"
+alias ai-ccu="claude update"
+alias ai-ccm="claude-monitor"
+alias ai-ccmd="claude-monitor --view daily"
+alias ai-ccmm="claude-monitor --view monthly"
 alias omd-claude-status='_claude_status'
 alias omd-claude-config='_claude_setup_vertex'
 alias omd-claude-install='_claude_install'

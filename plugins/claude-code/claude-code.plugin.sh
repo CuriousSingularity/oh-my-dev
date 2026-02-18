@@ -179,6 +179,8 @@ _claude_update_config() {
 
 # Useful aliases
 alias ai-cc="claude"
+alias ai-ccd="claude --dangerously-skip-permissions"
+alias clauded="claude --dangerously-skip-permissions"
 alias ai-ccu="claude update"
 alias ai-ccm="claude-monitor"
 alias ai-ccmd="claude-monitor --view daily"

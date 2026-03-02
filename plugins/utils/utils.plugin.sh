@@ -282,6 +282,37 @@ tmuxn() {
     fi
 }
 
+# Function to list all tmux sessions
+# Usage: tmuxls
+tmuxls() {
+    # Check if tmux is installed
+    if ! command -v tmux >/dev/null 2>&1; then
+        echo "Error: tmux is not installed." >&2
+        return 1
+    fi
+
+    tmux list-sessions
+}
+
+# Function to kill a tmux session by name
+# Usage: tmuxkill <session_name>
+tmuxkill() {
+    local session_name=$1
+    if [ -z "$session_name" ]; then
+        echo "Error: Session name is required." >&2
+        echo "Usage: tmuxkill <session_name>" >&2
+        return 1
+    fi
+
+    tmux kill-session -t "$session_name"
+    if [ $? -eq 0 ]; then
+        echo "Session '$session_name' killed successfully."
+    else
+        echo "Error: Failed to kill session '$session_name'." >&2
+        return 1
+    fi
+}
+
 # Function to pack files into a tar archive
 # Usage: pack <file1> [file2] [file3] ...
 pack() {
